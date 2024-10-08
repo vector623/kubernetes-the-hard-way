@@ -1,0 +1,50 @@
+---
+- name: Install KVM on Debian
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install KVM and related packages
+      apt:
+        name:
+          - qemu-kvm
+          - libvirt-daemon-system
+          - libvirt-clients
+          - bridge-utils
+          - virt-manager
+        state: present
+
+    - name: Ensure libvirtd is enabled and started
+      systemd:
+        name: libvirtd
+        enabled: yes
+        state: started
+
+    - name: Add user to libvirt group
+      user:
+        name: "{{ ansible_user_id }}"
+        groups: libvirt
+        append: yes
+
+    - name: Check if KVM module is loaded
+      command: lsmod | grep kvm
+      register: kvm_module
+      failed_when: kvm_module.rc > 1
+      changed_when: no
+
+    - name: Load KVM module if not loaded
+      command: modprobe kvm
+      when: kvm_module.rc == 1
+
+    - name: Ensure KVM is working
+      command: kvm-ok
+      register: kvm_ok
+      failed_when: "'NOT supported' in kvm_ok.stdout"
+      changed_when: no
+
+    - name: Print KVM status
+      debug:
+        msg: "{{ kvm_ok.stdout }}"
