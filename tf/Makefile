@@ -1,11 +1,5 @@
 #!make
 
-install-hypervisor:
-
-start-hypervisor:
-	sudo systemctl start libvirtd
-	sudo systemctl enable libvirtd
-
 connect:
 	terraform login
 
@@ -19,6 +13,5 @@ apply:
 console:
 	sudo virsh console k8s-server
 
-clean:
-	-sudo virsh net-destroy k8snet
-	-sudo virsh net-undefine k8snet
+shutdown:
+	sudo virsh shutdown k8s-server
