@@ -9,12 +9,15 @@ start-hypervisor:
 connect:
 	terraform login
 
-fix-perms:
-	sudo chown -R libvirt-qemu:kvm ~/kvm-storage
-	sudo chmod 600 ~/kvm-storage/*
+taint:
+	terraform taint libvirt_volume.debian-bookworm-qcow2-server
+	terraform taint libvirt_domain.k8s-server
 
-tf-apply: fix-perms
-	terraform apply
+apply:
+	terraform apply -auto-approve
+
+console:
+	sudo virsh console k8s-server
 
 clean:
 	-sudo virsh net-destroy k8snet
