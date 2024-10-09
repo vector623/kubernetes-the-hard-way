@@ -15,3 +15,9 @@ console:
 
 shutdown:
 	sudo virsh shutdown k8s-server
+
+start:
+	sudo virsh start k8s-server
+
+list:
+	sudo virsh list --all
