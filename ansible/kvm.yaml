@@ -10,10 +10,13 @@
     - name: Install KVM and related packages
       apt:
         name:
-          - qemu-kvm
-          - libvirt-daemon-system
-          - libvirt-clients
           - bridge-utils
+          - libguestfs-tools
+          - libosinfo-bin
+          - libvirt-clients
+          - libvirt-daemon-system
+          - qemu-kvm
+          - qemu-system
           - virt-manager
         state: present
 
@@ -25,7 +28,7 @@
 
     - name: Add user to libvirt group
       user:
-        name: "{{ ansible_user_id }}"
+        name: davidg
         groups: libvirt
         append: yes
 
@@ -39,6 +42,16 @@
       command: modprobe kvm
       when: kvm_module.rc == 1
 
+    - name: Check if vhost_net module is loaded
+      command: lsmod | grep vhost_net
+      register: vhost_net_module
+      failed_when: vhost_net_module.rc > 1
+      changed_when: no
+
+    - name: Load vhost_net module if not loaded
+      command: modprobe vhost_net
+      when: vhost_net_module.rc == 1
+
     - name: Ensure KVM is working
       command: kvm-ok
       register: kvm_ok
@@ -48,3 +61,4 @@
     - name: Print KVM status
       debug:
         msg: "{{ kvm_ok.stdout }}"
+
