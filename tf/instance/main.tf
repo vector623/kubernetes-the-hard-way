@@ -22,7 +22,7 @@ resource"libvirt_volume" "base-volume" {
 resource "libvirt_domain" "domain" {
   name   = var.domain_name
   memory = "2048"
-  vcpu   = 2
+  vcpu   = 1
   network_interface {
     network_name = var.network_name
     addresses = [
