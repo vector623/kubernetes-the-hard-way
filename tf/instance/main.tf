@@ -25,6 +25,8 @@ resource "libvirt_domain" "domain" {
   vcpu   = 1
   network_interface {
     network_name = var.network_name
+    hostname = var.domain_name
+
     addresses = [
       var.ip-address
     ]
