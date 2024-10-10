@@ -8,7 +8,6 @@ This tutorial walks you through setting up Kubernetes the hard way. This guide i
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
-
 ## Target Audience
 
 The target audience for this tutorial is someone who wants to understand the fundamentals of Kubernetes and how the core components fit together.
@@ -41,3 +40,9 @@ This tutorial requires four (4) ARM64 based virtual or physical machines connect
 * [Provisioning Pod Network Routes](docs/11-pod-network-routes.md)
 * [Smoke Test](docs/12-smoke-test.md)
 * [Cleaning Up](docs/13-cleanup.md)
+
+
+## Infrastructure
+
+* `ansible/` installs libvirt and configures permissions
+* `tf/` provisions kvm VMs to use for k8s

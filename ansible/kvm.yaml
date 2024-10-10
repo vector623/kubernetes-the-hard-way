@@ -1,0 +1,64 @@
+---
+- name: Install KVM on Debian
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install KVM and related packages
+      apt:
+        name:
+          - bridge-utils
+          - libguestfs-tools
+          - libosinfo-bin
+          - libvirt-clients
+          - libvirt-daemon-system
+          - qemu-kvm
+          - qemu-system
+          - virt-manager
+        state: present
+
+    - name: Ensure libvirtd is enabled and started
+      systemd:
+        name: libvirtd
+        enabled: yes
+        state: started
+
+    - name: Add user to libvirt group
+      user:
+        name: davidg
+        groups: libvirt
+        append: yes
+
+    - name: Check if KVM module is loaded
+      command: lsmod | grep kvm
+      register: kvm_module
+      failed_when: kvm_module.rc > 1
+      changed_when: no
+
+    - name: Load KVM module if not loaded
+      command: modprobe kvm
+      when: kvm_module.rc == 1
+
+    - name: Check if vhost_net module is loaded
+      command: lsmod | grep vhost_net
+      register: vhost_net_module
+      failed_when: vhost_net_module.rc > 1
+      changed_when: no
+
+    - name: Load vhost_net module if not loaded
+      command: modprobe vhost_net
+      when: vhost_net_module.rc == 1
+
+    - name: Ensure KVM is working
+      command: kvm-ok
+      register: kvm_ok
+      failed_when: "'NOT supported' in kvm_ok.stdout"
+      changed_when: no
+
+    - name: Print KVM status
+      debug:
+        msg: "{{ kvm_ok.stdout }}"
+
