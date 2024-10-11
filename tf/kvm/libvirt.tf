@@ -28,6 +28,13 @@ locals {
       ip       = "10.17.3.21"
       subnet   = "10.200.1.0/24"
     }
+    agent2 = {
+      name     = "k8s-node-2"
+      hostname = "node-2"
+      fqdn     = "node-2.kubernetes.local"
+      ip       = "10.17.3.22"
+      subnet   = "10.200.1.0/24"
+    }
   }
 }
 
