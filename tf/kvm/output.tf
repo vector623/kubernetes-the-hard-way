@@ -1,3 +1,3 @@
-output machine-db {
-  value = local.machine-database
-}
+# output machine-db {
+#   value = local.machine-database
+# }

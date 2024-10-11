@@ -12,6 +12,13 @@ taint:
 	terraform taint module.k8s-agent1.libvirt_domain.domain
 	terraform taint module.k8s-agent1.libvirt_volume.base-volume
 
+ssh-hosts-reset:
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.10"
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.20"
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.21"
+
+clean: taint ssh-hosts-reset
+
 apply:
 	terraform apply -auto-approve
 
