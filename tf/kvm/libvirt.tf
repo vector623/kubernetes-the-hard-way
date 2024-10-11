@@ -15,16 +15,16 @@ locals {
       ip       = "10.17.3.10"
     }
     agent0 = {
-      name     = "k8s-agent0"
-      hostname = "agent0"
-      fqdn     = "agent0.kubernetes.local"
+      name     = "k8s-node-0"
+      hostname = "node-0"
+      fqdn     = "node-0.kubernetes.local"
       ip       = "10.17.3.20"
       subnet   = "10.200.0.0/24"
     }
     agent1 = {
-      name     = "k8s-agent1"
-      hostname = "agent1"
-      fqdn     = "agent1.kubernetes.local"
+      name     = "k8s-node-1"
+      hostname = "node-1"
+      fqdn     = "node-1.kubernetes.local"
       ip       = "10.17.3.21"
       subnet   = "10.200.1.0/24"
     }
