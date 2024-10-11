@@ -12,8 +12,9 @@ variable domain_name {}
 variable network_name {}
 variable cloud_init_id {}
 variable ip-address {}
+variable "hostname" {}
 
-resource"libvirt_volume" "base-volume" {
+resource "libvirt_volume" "base-volume" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
@@ -25,7 +26,7 @@ resource "libvirt_domain" "domain" {
   vcpu   = 1
   network_interface {
     network_name = var.network_name
-    hostname = var.domain_name
+    hostname     = var.hostname
 
     addresses = [
       var.ip-address
