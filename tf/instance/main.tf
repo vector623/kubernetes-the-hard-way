@@ -39,8 +39,9 @@ resource "libvirt_domain" "main" {
   memory = "2048"
   vcpu   = 1
   network_interface {
-    network_name = var.network_name
-    hostname     = var.hostname
+    network_name   = var.network_name
+    hostname       = var.hostname
+    wait_for_lease = true
 
     addresses = [
       var.ip-address

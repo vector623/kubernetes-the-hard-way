@@ -4,13 +4,13 @@ connect:
 	terraform login
 
 taint:
-	#-terraform taint libvirt_network.kube_network
-	-terraform taint module.k8s-nodes[\"server\"].libvirt_domain.main
-	-terraform taint module.k8s-nodes[\"server\"].libvirt_domain.main
-	-terraform taint module.k8s-nodes[\"node0\"].libvirt_domain.main
-	-terraform taint module.k8s-nodes[\"node0\"].libvirt_domain.main
-	-terraform taint module.k8s-nodes[\"node1\"].libvirt_domain.main
-	-terraform taint module.k8s-nodes[\"node1\"].libvirt_domain.main
+	terraform taint libvirt_network.kube_network
+	terraform taint module.k8s-nodes[\"server\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"server\"].libvirt_volume.main
+	terraform taint module.k8s-nodes[\"node0\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"node0\"].libvirt_volume.main
+	terraform taint module.k8s-nodes[\"node1\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"node1\"].libvirt_volume.main
 
 
 ssh-hosts-reset:

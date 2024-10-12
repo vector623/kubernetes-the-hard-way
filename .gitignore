@@ -89,3 +89,4 @@ override.tf.json
 terraform.rc
 /downloads/
 /machines.txt
+/hosts
