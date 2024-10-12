@@ -4,8 +4,21 @@ connect:
 	terraform login
 
 taint:
-	terraform taint libvirt_volume.debian-bookworm-qcow2-server
-	terraform taint libvirt_domain.k8s-server
+	terraform taint libvirt_network.kube_network
+	terraform taint module.k8s-nodes[\"server\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"server\"].libvirt_volume.main
+	terraform taint module.k8s-nodes[\"node0\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"node0\"].libvirt_volume.main
+	terraform taint module.k8s-nodes[\"node1\"].libvirt_domain.main
+	terraform taint module.k8s-nodes[\"node1\"].libvirt_volume.main
+
+
+ssh-hosts-reset:
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.10"
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.20"
+	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.21"
+
+clean: taint ssh-hosts-reset
 
 apply:
 	terraform apply -auto-approve
@@ -21,3 +34,4 @@ start:
 
 list:
 	sudo virsh list --all
+

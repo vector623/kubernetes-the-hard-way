@@ -87,3 +87,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+/downloads/
+/machines.txt
+/hosts

@@ -10,31 +10,47 @@ variable base_volume_id {}
 variable base_volume_pool {}
 variable domain_name {}
 variable network_name {}
-variable cloud_init_id {}
 variable ip-address {}
+variable "hostname" {}
+variable "fqdn" {}
 
-resource"libvirt_volume" "base-volume" {
+resource "libvirt_volume" "main" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
 }
 
-resource "libvirt_domain" "domain" {
+data "template_file" "user_data" {
+  template = file("${path.module}/cloud_init.cfg")
+  vars = {
+    hostname = var.hostname
+    fqdn     = var.fqdn
+  }
+}
+
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name      = "${var.domain_name}.iso"
+  pool      = var.base_volume_pool
+  user_data = data.template_file.user_data.rendered
+}
+
+resource "libvirt_domain" "main" {
   name   = var.domain_name
   memory = "2048"
   vcpu   = 1
   network_interface {
-    network_name = var.network_name
-    hostname = var.domain_name
+    network_name   = var.network_name
+    hostname       = var.hostname
+    wait_for_lease = true
 
     addresses = [
       var.ip-address
     ]
   }
   disk {
-    volume_id = libvirt_volume.base-volume.id
+    volume_id = libvirt_volume.main.id
   }
-  cloudinit = var.cloud_init_id
+  cloudinit = libvirt_cloudinit_disk.commoninit.id
   console {
     type        = "pty"
     target_type = "serial"
@@ -48,5 +64,5 @@ resource "libvirt_domain" "domain" {
 }
 
 output "ip-address" {
-  value = libvirt_domain.domain.network_interface.0.addresses.0
+  value = libvirt_domain.main.network_interface.0.addresses.0
 }
