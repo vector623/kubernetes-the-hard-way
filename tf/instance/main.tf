@@ -14,7 +14,7 @@ variable ip-address {}
 variable "hostname" {}
 variable "fqdn" {}
 
-resource "libvirt_volume" "base-volume" {
+resource "libvirt_volume" "main" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
@@ -29,12 +29,12 @@ data "template_file" "user_data" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "commoninit.iso"
+  name      = "${var.domain_name}.iso"
   pool      = var.base_volume_pool
   user_data = data.template_file.user_data.rendered
 }
 
-resource "libvirt_domain" "domain" {
+resource "libvirt_domain" "main" {
   name   = var.domain_name
   memory = "2048"
   vcpu   = 1
@@ -47,7 +47,7 @@ resource "libvirt_domain" "domain" {
     ]
   }
   disk {
-    volume_id = libvirt_volume.base-volume.id
+    volume_id = libvirt_volume.main.id
   }
   cloudinit = libvirt_cloudinit_disk.commoninit.id
   console {
@@ -63,5 +63,5 @@ resource "libvirt_domain" "domain" {
 }
 
 output "ip-address" {
-  value = libvirt_domain.domain.network_interface.0.addresses.0
+  value = libvirt_domain.main.network_interface.0.addresses.0
 }
