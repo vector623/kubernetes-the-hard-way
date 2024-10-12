@@ -11,13 +11,3 @@ resource "libvirt_volume" "debian-bookworm-qcow2-server" {
   base_volume_pool = libvirt_volume.debian-bookworm-qcow2.pool
 }
 
-data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
-}
-
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "commoninit.iso"
-  pool      = libvirt_pool.default.name
-  user_data = data.template_file.user_data.rendered
-}
-

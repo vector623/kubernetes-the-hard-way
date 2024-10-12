@@ -88,3 +88,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 /downloads/
+/machines.txt

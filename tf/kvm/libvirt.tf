@@ -13,6 +13,7 @@ locals {
       hostname = "server"
       fqdn     = "server.kubernetes.local"
       ip       = "10.17.3.10"
+      subnet   = ""
     }
     node0 = {
       name     = "k8s-node-0"
@@ -31,48 +32,14 @@ locals {
   }
 }
 
-module k8s-nodes {
-  for_each = local.k8s-nodes
+module "k8s-nodes" {
+  for_each         = local.k8s-nodes
   source           = "../instance"
   domain_name      = each.value.name
   hostname         = each.value.hostname
+  fqdn             = each.value.fqdn
   ip-address       = each.value.ip
   base_volume_id   = libvirt_volume.debian-bookworm-qcow2.id
   base_volume_pool = libvirt_volume.debian-bookworm-qcow2.pool
   network_name     = libvirt_network.kube_network.name
-  cloud_init_id    = libvirt_cloudinit_disk.commoninit.id
-
 }
-
-# module "k8s-server" {
-#   source           = "../instance"
-#   domain_name      = local.hosts.server.name
-#   hostname         = local.hosts.server.hostname
-#   base_volume_id   = libvirt_volume.debian-bookworm-qcow2.id
-#   base_volume_pool = libvirt_volume.debian-bookworm-qcow2.pool
-#   network_name     = libvirt_network.kube_network.name
-#   cloud_init_id    = libvirt_cloudinit_disk.commoninit.id
-#   ip-address       = local.hosts.server.ip
-# }
-#
-# module "k8s-agent0" {
-#   source           = "../instance"
-#   domain_name      = local.hosts.agent0.name
-#   hostname         = local.hosts.agent0.hostname
-#   base_volume_id   = libvirt_volume.debian-bookworm-qcow2.id
-#   base_volume_pool = libvirt_volume.debian-bookworm-qcow2.pool
-#   network_name     = libvirt_network.kube_network.name
-#   cloud_init_id    = libvirt_cloudinit_disk.commoninit.id
-#   ip-address       = local.hosts.agent0.ip
-# }
-#
-# module "k8s-agent1" {
-#   source           = "../instance"
-#   domain_name      = local.hosts.agent1.name
-#   hostname         = local.hosts.agent1.hostname
-#   base_volume_id   = libvirt_volume.debian-bookworm-qcow2.id
-#   base_volume_pool = libvirt_volume.debian-bookworm-qcow2.pool
-#   network_name     = libvirt_network.kube_network.name
-#   cloud_init_id    = libvirt_cloudinit_disk.commoninit.id
-#   ip-address       = local.hosts.agent1.ip
-# }

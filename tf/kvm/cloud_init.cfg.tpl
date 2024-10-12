@@ -25,3 +25,5 @@ runcmd:
   - sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
   - sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
   - systemctl restart sshd
+  - sed -i '$a\127.0.1.1    ${fqdn} ${hostname}' /path/to/file.txt
+

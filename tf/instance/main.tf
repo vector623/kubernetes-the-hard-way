@@ -10,14 +10,28 @@ variable base_volume_id {}
 variable base_volume_pool {}
 variable domain_name {}
 variable network_name {}
-variable cloud_init_id {}
 variable ip-address {}
 variable "hostname" {}
+variable "fqdn" {}
 
 resource "libvirt_volume" "base-volume" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
+}
+
+data "template_file" "user_data" {
+  template = file("${path.module}/cloud_init.cfg")
+  vars = {
+    hostname = var.hostname
+    fqdn     = var.fqdn
+  }
+}
+
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name      = "commoninit.iso"
+  pool      = var.base_volume_pool
+  user_data = data.template_file.user_data.rendered
 }
 
 resource "libvirt_domain" "domain" {
@@ -35,7 +49,7 @@ resource "libvirt_domain" "domain" {
   disk {
     volume_id = libvirt_volume.base-volume.id
   }
-  cloudinit = var.cloud_init_id
+  cloudinit = libvirt_cloudinit_disk.commoninit.id
   console {
     type        = "pty"
     target_type = "serial"
