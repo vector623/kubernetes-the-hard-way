@@ -1,6 +1,7 @@
 resource "libvirt_pool" "default" {
   name = "default"
   type = "dir"
+
   path = "/var/lib/libvirt/images"
   # make sure ownership is set to libvirt-qemu:kvm
   # permissions issues ref: https://github.com/dmacvicar/terraform-provider-libvirt/issues/658#issuecomment-569695035

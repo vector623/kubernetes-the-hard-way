@@ -46,3 +46,34 @@ This tutorial requires four (4) ARM64 based virtual or physical machines connect
 
 * `ansible/` installs libvirt and configures permissions
 * `tf/` provisions kvm VMs to use for k8s
+
+## Permissions problems and fixes
+
+problem:
+
+```shell
+│ Error: error retrieving volume for disk: Storage volume not found: no storage vol with matching name 'k8s-node-0.qcow2'
+│ 
+│   with module.k8s-nodes["node0"].libvirt_domain.main,
+│   on ../instance/main.tf line 38, in resource "libvirt_domain" "main":
+│   38: resource "libvirt_domain" "main" 
+```
+
+solution:
+
+```
+# install apparmor utils
+sudo apt update
+sudo apt install apparmor-utils
+
+# disable apparmor enforcement on libvirt
+sudo aa-complain /etc/apparmor.d/usr.sbin.libvirtd
+
+# restart libvirt
+sudo systemctl restart libvirtd
+
+# fix libvirt permissions
+sudo ls -al /var/lib/libvirt/images
+sudo usermod -a -G kvm davidg
+sudo chmod g+rw /var/lib/libvirt/images
+```

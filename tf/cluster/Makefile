@@ -18,7 +18,27 @@ ssh-hosts-reset:
 	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.20"
 	ssh-keygen -f "/home/davidg/.ssh/known_hosts" -R "10.17.3.21"
 
-clean: taint ssh-hosts-reset
+reset: taint ssh-hosts-reset
+
+clean:
+	-sudo virsh destroy k8s-server
+	-sudo virsh destroy k8s-node-0
+	-sudo virsh destroy k8s-node-1
+	-sudo virsh undefine k8s-server
+	-sudo virsh undefine k8s-node-0
+	-sudo virsh undefine k8s-node-1
+	-sudo virsh vol-delete --pool default k8s-server.iso
+	-sudo virsh vol-delete --pool default k8s-node-0.iso
+	-sudo virsh vol-delete --pool default k8s-node-1.iso
+	-terraform state rm module.k8s-nodes\[\"node0\"\].data.template_file.user_data
+	-terraform state rm module.k8s-nodes\[\"node0\"\].libvirt_cloudinit_disk.commoninit
+	-terraform state rm module.k8s-nodes\[\"node0\"\].libvirt_domain.main
+	-terraform state rm module.k8s-nodes\[\"node1\"\].data.template_file.user_data
+	-terraform state rm module.k8s-nodes\[\"node1\"\].libvirt_cloudinit_disk.commoninit
+	-terraform state rm module.k8s-nodes\[\"node1\"\].libvirt_domain.main
+	-terraform state rm module.k8s-nodes\[\"server\"\].data.template_file.user_data
+	-terraform state rm module.k8s-nodes\[\"server\"\].libvirt_cloudinit_disk.commoninit
+	-terraform state rm module.k8s-nodes\[\"server\"\].libvirt_domain.main
 
 apply:
 	terraform apply -auto-approve
