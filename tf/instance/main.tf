@@ -18,6 +18,7 @@ resource "libvirt_volume" "main" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
+  size             = 21474836480
 }
 
 data "template_file" "user_data" {
@@ -63,6 +64,10 @@ resource "libvirt_domain" "main" {
   }
 }
 
-output "ip-address" {
-  value = libvirt_domain.main.network_interface.0.addresses.0
+output "debug" {
+  value = {
+    ip-address = libvirt_domain.main.network_interface.0.addresses.0
+    disk-size  = libvirt_volume.main.size
+  }
 }
+

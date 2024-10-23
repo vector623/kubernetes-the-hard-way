@@ -1,3 +1,5 @@
 output debug {
-  value = libvirt_volume.debian-bookworm-qcow2
+  value = {
+    size = module.k8s-nodes
+  }
 }
