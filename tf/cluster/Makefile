@@ -1,7 +1,15 @@
 #!make
 
+LIBVIRT_DEFAULT_URI=qemu+unix:///system?socket=/var/run/libvirt/libvirt-sock
+export
+
 connect:
 	terraform login
+
+virsh-test-cn:
+	#virsh -c test:///default list
+	#virsh -c qemu+unix:///system?socket=/var/run/libvirt/libvirt-sock pool-list --all
+	virsh  pool-list --all
 
 taint:
 	terraform taint libvirt_network.kube_network
@@ -20,7 +28,7 @@ ssh-hosts-reset:
 
 reset: taint ssh-hosts-reset
 
-clean:
+clean: fix-perms
 	-sudo virsh destroy k8s-server
 	-sudo virsh destroy k8s-node-0
 	-sudo virsh destroy k8s-node-1
@@ -39,6 +47,7 @@ clean:
 	-terraform state rm module.k8s-nodes\[\"server\"\].data.template_file.user_data
 	-terraform state rm module.k8s-nodes\[\"server\"\].libvirt_cloudinit_disk.commoninit
 	-terraform state rm module.k8s-nodes\[\"server\"\].libvirt_domain.main
+	-rm ~/k8s-pool/k8s-server.iso
 
 apply:
 	terraform apply -auto-approve
@@ -55,3 +64,5 @@ start:
 list:
 	sudo virsh list --all
 
+fix-perms:
+	-sudo chown -R davidg:davidg /home/davidg/k8s-pool

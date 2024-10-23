@@ -49,6 +49,17 @@ This tutorial requires four (4) ARM64 based virtual or physical machines connect
 
 ## Permissions problems and fixes
 
+Follow this guide https://computingforgeeks.com/use-virt-manager-as-non-root-user/. This will setup libvirtd with permissions.
+
+Then use socket file connection string:
+
+```
+export LIBVIRT_DEFAULT_URI=qemu+unix:///system?socket=/var/run/libvirt/libvirt-sock
+virsh  pool-list --all
+```
+
+### bad, old, don't use
+
 problem:
 
 ```shell
