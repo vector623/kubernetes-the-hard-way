@@ -49,6 +49,8 @@ This tutorial requires four (4) ARM64 based virtual or physical machines connect
 
 ## Permissions problems and fixes
 
+### enable virsh and terraform qemu/kvm access without root
+
 Follow this guide https://computingforgeeks.com/use-virt-manager-as-non-root-user/. This will setup libvirtd with permissions.
 
 Then use socket file connection string:
@@ -58,9 +60,9 @@ export LIBVIRT_DEFAULT_URI=qemu+unix:///system?socket=/var/run/libvirt/libvirt-s
 virsh  pool-list --all
 ```
 
-### bad, old, don't use
+### correct faulty libvirt storage permissions
 
-problem:
+problem: libvirt server can't access its own images/volumes
 
 ```shell
 │ Error: error retrieving volume for disk: Storage volume not found: no storage vol with matching name 'k8s-node-0.qcow2'
@@ -70,7 +72,7 @@ problem:
 │   38: resource "libvirt_domain" "main" 
 ```
 
-solution:
+solution: turn off apparmor and revise permissions
 
 ```
 # install apparmor utils
@@ -80,11 +82,10 @@ sudo apt install apparmor-utils
 # disable apparmor enforcement on libvirt
 sudo aa-complain /etc/apparmor.d/usr.sbin.libvirtd
 
+# fix libvirt permissions
+sudo chown -R libvirt-qemu:kvm /var/lib/libvirt
+sudo chmod g+rw /var/lib/libvirt/images
+
 # restart libvirt
 sudo systemctl restart libvirtd
-
-# fix libvirt permissions
-sudo ls -al /var/lib/libvirt/images
-sudo usermod -a -G kvm davidg
-sudo chmod g+rw /var/lib/libvirt/images
 ```
