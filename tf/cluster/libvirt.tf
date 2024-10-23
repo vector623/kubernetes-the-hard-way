@@ -28,20 +28,20 @@ locals {
       ip       = "10.17.3.10"
       subnet   = ""
     }
-    # node0 = {
-    #   name     = "k8s-node-0"
-    #   hostname = "node-0"
-    #   fqdn     = "node-0.kubernetes.local"
-    #   ip       = "10.17.3.20"
-    #   subnet   = "10.200.0.0/24"
-    # }
-    # node1 = {
-    #   name     = "k8s-node-1"
-    #   hostname = "node-1"
-    #   fqdn     = "node-1.kubernetes.local"
-    #   ip       = "10.17.3.21"
-    #   subnet   = "10.200.1.0/24"
-    # }
+    node0 = {
+      name     = "k8s-node-0"
+      hostname = "node-0"
+      fqdn     = "node-0.kubernetes.local"
+      ip       = "10.17.3.20"
+      subnet   = "10.200.0.0/24"
+    }
+    node1 = {
+      name     = "k8s-node-1"
+      hostname = "node-1"
+      fqdn     = "node-1.kubernetes.local"
+      ip       = "10.17.3.21"
+      subnet   = "10.200.1.0/24"
+    }
   }
 }
 

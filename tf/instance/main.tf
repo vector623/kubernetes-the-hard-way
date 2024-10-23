@@ -18,7 +18,7 @@ resource "libvirt_volume" "main" {
   name             = "${var.domain_name}.qcow2"
   base_volume_id   = var.base_volume_id
   base_volume_pool = var.base_volume_pool
-  size             = 21474836480
+  size             = 32212254720
 }
 
 data "template_file" "user_data" {
