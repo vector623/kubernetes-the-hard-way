@@ -1,10 +1,23 @@
-resource "libvirt_pool" "default" {
-  name = "default"
-  type = "dir"
-  path = "/var/lib/libvirt/images"
-  # make sure ownership is set to libvirt-qemu:kvm
-  # permissions issues ref: https://github.com/dmacvicar/terraform-provider-libvirt/issues/658#issuecomment-569695035
+resource "null_resource" "example" {
+  provisioner "local-exec" {
+    command = "echo $HOME"
+  }
 }
+
+output homedir {
+  value = null_resource.example
+}
+
+# resource "libvirt_pool" "default" {
+#   name = "k8s-pool"
+#   type = "dir"
+#
+#   target {
+#     path = "/home/davidg/k8s-pool"
+#   }
+#   # make sure ownership is set to libvirt-qemu:kvm
+#   # permissions issues ref: https://github.com/dmacvicar/terraform-provider-libvirt/issues/658#issuecomment-569695035
+# }
 
 locals {
   k8s-nodes = {

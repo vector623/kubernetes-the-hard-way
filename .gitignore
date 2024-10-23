@@ -90,3 +90,4 @@ terraform.rc
 /downloads/
 /machines.txt
 /hosts
+.terraform
